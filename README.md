@@ -1,0 +1,1 @@
+This simple Java program intends to show an IP-address of a machine. After start it shows a blue round icon in the System tray. Left click to show IP-address, right click to show popup menu with one "Exit" item.

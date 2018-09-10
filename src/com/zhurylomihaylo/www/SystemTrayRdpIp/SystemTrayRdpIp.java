@@ -16,13 +16,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-
-import com.zhurylomihaylo.www.SystemTrayRdpIp.Messages;
 
 public class SystemTrayRdpIp {
 
@@ -33,25 +32,25 @@ public class SystemTrayRdpIp {
 		try {
 			new SystemTrayRdpIp().doAllActions();
 		} catch (Throwable e) {
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Ups", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e.toString() + "\n" + Arrays.toString(e.getStackTrace()), "Ups", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	void doAllActions() {
 		if (!SystemTray.isSupported()) {
-			throw new RuntimeException("System tray is not supported.");
+			throw new RuntimeException(Messages.getString("SystemTrayIsNotSupported"));
 		}
 		//=========================================
 		PopupMenu popup = new PopupMenu();
 		
-		MenuItem exitItem = new MenuItem("Exit");
+		MenuItem exitItem = new MenuItem(Messages.getString("Exit"));
 		exitItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String optionYes = "Yes";
-				String optionNo = "No";
+				String optionYes = Messages.getString("Yes");
+				String optionNo = Messages.getString("No");
 				String [] options = {optionYes, optionNo};
-				int result = JOptionPane.showOptionDialog(null, "Are you sure to exit?", null, JOptionPane.YES_NO_OPTION,
+				int result = JOptionPane.showOptionDialog(null, Messages.getString("AreYouSureToExit"), null, JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, options, optionYes);
 				if (result == 0)
 					System.exit(0);
@@ -61,7 +60,7 @@ public class SystemTrayRdpIp {
 		//=========================================
 		Image image = new ImageIcon(getClass().getResource("ip_address.png")).getImage();
 
-		trayIcon = new TrayIcon(image, "Left-click mouse to determine your IP-address", popup);
+		trayIcon = new TrayIcon(image, Messages.getString("LeftClickMouseToDetermineYourIpAddress"), popup);
 		trayIcon.setImageAutoSize(true);
 		
 		trayIcon.addMouseListener(new MouseAdapter() {
@@ -77,7 +76,7 @@ public class SystemTrayRdpIp {
 		try {
 			tray.add(trayIcon);
 		} catch (AWTException e) {
-			throw new RuntimeException("Tray icon could not be added");
+			throw new RuntimeException(Messages.getString("TrayIconCouldNotBeAdded"));
 		}
 		//=========================================
 		Thread thread = new Thread(new Runnable() {
@@ -110,7 +109,7 @@ public class SystemTrayRdpIp {
 					setIp("undefined"); 
 					System.out.println("Done"); 
 				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(null, e1.getMessage(), "Ups", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, e1.getMessage(), Messages.getString("Ups"), JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
 				}
 			}
@@ -121,11 +120,11 @@ public class SystemTrayRdpIp {
 
 	private void showIP() {
 		if (getIp() == null) {
-			trayIcon.displayMessage(null, "Your remote IP-address is defining now. Try again later.", TrayIcon.MessageType.INFO); 
+			trayIcon.displayMessage(null, Messages.getString("YourRemoteIpAddressIsDefiningNowTryAgainLater"), TrayIcon.MessageType.INFO); 
 		} else if (getIp().equals("undefined")) { 
-			trayIcon.displayMessage(null, "Failed to determine your remote IP-address.", TrayIcon.MessageType.INFO); 
+			trayIcon.displayMessage(null, Messages.getString("FailedToDetermineYourRemoteIpAddress"), TrayIcon.MessageType.INFO); 
 		} else {
-			trayIcon.displayMessage("Your remote IP-address", getIp(), TrayIcon.MessageType.INFO);  
+			trayIcon.displayMessage(Messages.getString("YourRemoteIpAddress"), getIp(), TrayIcon.MessageType.INFO);  
 		};
 	}
 	
